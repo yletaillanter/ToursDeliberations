@@ -1,5 +1,6 @@
 package com.ylt.toursdeliberations.service
 
+import com.ylt.toursdeliberations.model.Deliberations
 import com.ylt.toursdeliberations.model.DeliberationsResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,7 +10,7 @@ import retrofit2.http.GET
 
 interface DeliberationsService {
 
-    @GET("api/records/1.0/search/?dataset=deliberations-tours-metropole-val-de-loire&q=&sort=delib_date&rows=10&facet=delib_id&facet=delib_date&facet=delib_objet&facet=type_seance&facet=themes")
+    @GET("api/records/1.0/search/?dataset=deliberations-tours-metropole-val-de-loire&q=&sort=delib_date&rows=100&facet=delib_id&facet=delib_date&facet=delib_objet&facet=type_seance&facet=themes")
     suspend fun getDeliberations(): DeliberationsResponse
 
     companion object {

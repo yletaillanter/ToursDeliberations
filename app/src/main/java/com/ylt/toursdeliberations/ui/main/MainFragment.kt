@@ -26,7 +26,7 @@ class MainFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                DeliberationsListView(viewModel, findNavController())
+                DeliberationsListView(viewModel.deliberationsList, findNavController())
             }
         }
     }

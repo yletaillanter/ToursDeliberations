@@ -19,33 +19,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import androidx.ui.tooling.preview.Preview
 import com.ylt.toursdeliberations.R
-import com.ylt.toursdeliberations.model.Deliberations
+import com.ylt.toursdeliberations.model.Deliberation
 import com.ylt.toursdeliberations.model.Record
 import com.ylt.toursdeliberations.ui.main.MainViewModel
 
 @Composable
-fun DeliberationsListView(viewModel:MainViewModel,navController: NavController) {
-    val records: List<Record> by  viewModel.deliberationsList.observeAsState(listOf())
+fun DeliberationsListView(liveDataRecord: LiveData<List<Record>>, navController: NavController) {
+    val records by liveDataRecord.observeAsState(emptyList())
 
-    LazyColumn (modifier = Modifier.padding(8.dp)) {
-        items(records) { record ->
-            val bundle = Bundle()
-            bundle.putString("delibId", record.deliberation.delibId)
-            DeliberationsCardView(record.deliberation, { navController.navigate(R.id.list_to_detail, bundle)})
-            Divider()
+    if (records.isEmpty()) {
+        LiveDataLoadingComponent()
+    } else {
+        LazyColumn(modifier = Modifier.padding(8.dp)) {
+            items(records) { record ->
+                val bundle = Bundle()
+                bundle.putString("delibId", record.deliberation.delibId)
+                DeliberationsCardView(
+                    record.deliberation,
+                    { navController.navigate(R.id.list_to_detail, bundle) })
+                Divider()
+            }
         }
     }
 }
 
 @Composable
-fun DeliberationsCardView(delib: Deliberations, onDeliberationClicked: () -> Unit){
+fun DeliberationsCardView(delib: Deliberation, onDeliberationClicked: () -> Unit) {
 
-    Card(
-        elevation = 12.dp
-    ) {
+    Card(elevation = 12.dp) {
         Column(
             Modifier
                 .padding(8.dp)
@@ -62,5 +67,5 @@ fun DeliberationsCardView(delib: Deliberations, onDeliberationClicked: () -> Uni
 @Preview
 @Composable
 fun DeliberationsCardPreview() {
-    DeliberationsCardView(Deliberations(delibObjet = "APPROBATION DU COMPTE ADMINISTRATIF DE L EXERCICE 2019 DU BUDGET PRINCIPAL ET AFFECTATION DU RESULTAT.", collNom = "Tours Métropole Val de Loire"),{})
+    DeliberationsCardView(getDummyRecord().first().deliberation,{})
 }

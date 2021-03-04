@@ -1,11 +1,9 @@
 package com.ylt.toursdeliberations.repository
 
-import android.util.Log
-import com.ylt.toursdeliberations.model.Deliberations
+import com.ylt.toursdeliberations.model.Deliberation
 import com.ylt.toursdeliberations.model.DeliberationsResponse
 import com.ylt.toursdeliberations.model.Record
 import com.ylt.toursdeliberations.service.DeliberationsService
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
@@ -22,5 +20,18 @@ class DeliberationsRepository(private val deliberationsService: DeliberationsSer
         }
     }
 
-    fun getAllDeliberations(): Flow<List<Record>> = getRemoteDeliberations().map { it -> it.records.toList()}
+    private fun getRemoteDeliberationById(delibId: String): Flow<DeliberationsResponse> = flow {
+        Timber.d( "getRemoteDeliberationById()")
+
+        try {
+            val networkResult = deliberationsService.getDeliberation(delibId)
+            emit(networkResult)
+        } catch (throwable: Throwable) {
+            Timber.e( "error while getting deliberation id [$delibId] : ${throwable}")
+        }
+    }
+
+    fun getAllDeliberations(): Flow<List<Record>> = getRemoteDeliberations().map { it.records.toList()}
+
+    fun getDeliberationById(delibId: String): Flow<List<Record>> = getRemoteDeliberationById(delibId).map { it.records.toList()}
 }

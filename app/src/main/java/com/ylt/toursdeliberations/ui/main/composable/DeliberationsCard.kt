@@ -25,7 +25,6 @@ import androidx.ui.tooling.preview.Preview
 import com.ylt.toursdeliberations.R
 import com.ylt.toursdeliberations.model.Deliberation
 import com.ylt.toursdeliberations.model.Record
-import com.ylt.toursdeliberations.ui.main.MainViewModel
 
 @Composable
 fun DeliberationsListView(liveDataRecord: LiveData<List<Record>>, navController: NavController) {
@@ -39,8 +38,8 @@ fun DeliberationsListView(liveDataRecord: LiveData<List<Record>>, navController:
                 val bundle = Bundle()
                 bundle.putString("delibId", record.deliberation.delibId)
                 DeliberationsCardView(
-                    record.deliberation,
-                    { navController.navigate(R.id.list_to_detail, bundle) })
+                    record.deliberation
+                ) { navController.navigate(R.id.list_to_detail, bundle) }
                 Divider()
             }
         }

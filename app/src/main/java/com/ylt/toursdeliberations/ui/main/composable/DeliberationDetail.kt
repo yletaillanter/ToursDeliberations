@@ -1,11 +1,9 @@
 package com.ylt.toursdeliberations.ui.main.composable
 
+import android.R
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -14,20 +12,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
-import com.google.gson.annotations.SerializedName
 import com.ylt.toursdeliberations.model.CR
 import com.ylt.toursdeliberations.model.Delib
 import com.ylt.toursdeliberations.model.Deliberation
@@ -38,8 +31,10 @@ import androidx.core.content.ContextCompat.startActivity
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
-import com.ylt.toursdeliberations.R
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
 
 
 @Composable
@@ -64,16 +59,18 @@ fun LiveDataComponentList(record: List<Record>) {
     Column(Modifier.padding(15.dp)) {
         Text("${deliberation.collNom} le ${date.dayOfMonth} ${getFrenchMonth(date.month)} ${date.year} ")
         Text(deliberation.typeSeance)
-        Text(deliberation.themes, fontStyle = FontStyle.Italic)
+//        Text(deliberation.themes, fontStyle = FontStyle.Italic)
         Text(deliberation.delibObjet, Modifier.padding(top=10.dp, bottom = 10.dp))
         Card (shape = RoundedCornerShape(3.dp)){
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(5.dp),horizontalArrangement = Arrangement.Center) {
-                ImageResourceThumbUp(vote = deliberation.votePour)
+                    .padding(5.dp),
+                    horizontalArrangement = Arrangement.Center
+            ) {
+                ImageResourceThumb(com.ylt.toursdeliberations.R.drawable.thumb_up, "vote pour ", deliberation.votePour)
                 Spacer(modifier = Modifier.padding(10.dp))
-                ImageResourceThumbDown(vote = deliberation.voteContre)
+                ImageResourceThumb(com.ylt.toursdeliberations.R.drawable.thumb_down_24, "vote contre ", deliberation.voteContre)
             }
         }
         Spacer(Modifier.size(15.dp))
@@ -81,10 +78,12 @@ fun LiveDataComponentList(record: List<Record>) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(5.dp),horizontalArrangement = Arrangement.Center) {
-                ImageResourcePDF("Voir le compte-rendu", { intentPdf(deliberation.crUrl.id, context)})
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ImageResourcePDF("Compte-rendu", { intentPdf(deliberation.crUrl.id, context)})
                 Spacer(modifier = Modifier.padding(10.dp))
-                ImageResourcePDF("Voir la délibération", { intentPdf(deliberation.delibUrl.id, context)})
+                ImageResourcePDF("Délibération", { intentPdf(deliberation.delibUrl.id, context)})
             }
         }
     }
@@ -114,27 +113,26 @@ fun getFrenchMonth(month: Month?): String {
     }
 }
 
-@Composable
-fun ImageResourceThumbUp(vote: Int) {
-    Column (verticalArrangement = Arrangement.Center) {
-        val image: Painter = painterResource(id = com.ylt.toursdeliberations.R.drawable.thumb_up)
-        Image(painter = image,contentDescription = "vote pour $vote")
-        Text("$vote")
-    }
-}
 
 @Composable
-fun ImageResourceThumbDown(vote: Int) {
-    Column {
-        val image: Painter = painterResource(id = com.ylt.toursdeliberations.R.drawable.thumb_down_24)
-        Image(painter = image,contentDescription = "vote contre $vote")
-        Row { Text("$vote") }
+fun ImageResourceThumb(drawable : Int, voteText: String, vote: Int) {
+    Column (horizontalAlignment = Alignment.CenterHorizontally) {
+        val image: Painter = painterResource(id = drawable)
+        Text(
+            fontStyle = FontStyle.Italic,
+            fontSize = 35.sp,
+            text = "$vote"
+        )
+        Image(painter = image,contentDescription = "$voteText $vote")
     }
 }
 
 @Composable
 fun ImageResourcePDF(text: String, onClick: ()->Unit) {
-    Column (Modifier.clickable { onClick() }, verticalArrangement = Arrangement.Center) {
+    Column (
+        Modifier.clickable { onClick() },
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         val image: Painter = painterResource(id = com.ylt.toursdeliberations.R.drawable.picture_pdf)
         Image(painter = image,contentDescription = text)
         Text(text)

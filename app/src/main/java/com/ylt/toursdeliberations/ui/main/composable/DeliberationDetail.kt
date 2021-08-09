@@ -1,16 +1,10 @@
 package com.ylt.toursdeliberations.ui.main.composable
 
-import android.R
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -31,10 +25,20 @@ import androidx.core.content.ContextCompat.startActivity
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.sp
+import com.ylt.toursdeliberations.R
+import com.ylt.toursdeliberations.ui.main.theme.Beige0
+import com.ylt.toursdeliberations.ui.main.theme.Bleu1
+import com.ylt.toursdeliberations.ui.main.theme.MyApplicationComposeTheme
+import com.ylt.toursdeliberations.ui.main.theme.ToursDelibTypography
 
 
 @Composable
@@ -56,34 +60,55 @@ fun LiveDataComponentList(record: List<Record>) {
     val date = LocalDate.parse(deliberation.delibDate)
     val context = LocalContext.current
 
-    Column(Modifier.padding(15.dp)) {
-        Text("${deliberation.collNom} le ${date.dayOfMonth} ${getFrenchMonth(date.month)} ${date.year} ")
-        Text(deliberation.typeSeance)
-//        Text(deliberation.themes, fontStyle = FontStyle.Italic)
-        Text(deliberation.delibObjet, Modifier.padding(top=10.dp, bottom = 10.dp))
-        Card (shape = RoundedCornerShape(3.dp)){
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                    horizontalArrangement = Arrangement.Center
-            ) {
-                ImageResourceThumb(com.ylt.toursdeliberations.R.drawable.thumb_up, "vote pour ", deliberation.votePour)
-                Spacer(modifier = Modifier.padding(10.dp))
-                ImageResourceThumb(com.ylt.toursdeliberations.R.drawable.thumb_down_24, "vote contre ", deliberation.voteContre)
-            }
-        }
-        Spacer(Modifier.size(15.dp))
-        Card (shape = RoundedCornerShape(3.dp)){
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                ImageResourcePDF("Compte-rendu", { intentPdf(deliberation.crUrl.id, context)})
-                Spacer(modifier = Modifier.padding(10.dp))
-                ImageResourcePDF("Délibération", { intentPdf(deliberation.delibUrl.id, context)})
+    MyApplicationComposeTheme {
+        Scaffold (
+            topBar = { MyTopBar() }
+        ) {
+            Column {
+                Text("${deliberation.collNom} le ${date.dayOfMonth} ${getFrenchMonth(date.month)} ${date.year} ", Modifier.padding(8.dp))
+                Text(deliberation.typeSeance, Modifier.padding(8.dp))
+                Text(deliberation.delibObjet.lowercase().replaceFirstChar { char -> char.uppercase() }, Modifier.padding(8.dp))
+                Card {
+                    Column {
+                        Spacer(Modifier.size(12.dp))
+                        Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            ImageResourceThumb(R.drawable.thumb_up, "vote pour ", deliberation.votePour)
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            ImageResourceThumb(R.drawable.thumb_down_24, "vote contre ", deliberation.voteContre)
+                        }
+
+                        Row (
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            AlertDialog(deliberation)
+                        }
+                    }
+
+                }
+                Spacer(Modifier.size(15.dp))
+                Card (shape = RoundedCornerShape(3.dp)) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        ImageResourcePDF("Compte-rendu") {
+                            intentPdf(
+                                deliberation.crUrl.id,
+                                context
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(40.dp))
+                        ImageResourcePDF("Délibération") {
+                            intentPdf(
+                                deliberation.delibUrl.id,
+                                context
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -118,12 +143,8 @@ fun getFrenchMonth(month: Month?): String {
 fun ImageResourceThumb(drawable : Int, voteText: String, vote: Int) {
     Column (horizontalAlignment = Alignment.CenterHorizontally) {
         val image: Painter = painterResource(id = drawable)
-        Text(
-            fontStyle = FontStyle.Italic,
-            fontSize = 35.sp,
-            text = "$vote"
-        )
         Image(painter = image,contentDescription = "$voteText $vote")
+        Text(text = "$vote", style = ToursDelibTypography.h4)
     }
 }
 
@@ -134,18 +155,64 @@ fun ImageResourcePDF(text: String, onClick: ()->Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val image: Painter = painterResource(id = com.ylt.toursdeliberations.R.drawable.picture_pdf)
-        Image(painter = image,contentDescription = text)
+        Image(painter = image,contentDescription = text, modifier = Modifier.size(60.dp))
         Text(text)
     }
 }
 
 @Composable
 fun LiveDataLoadingComponent() {
-    CircularProgressIndicator(modifier = Modifier
-        .wrapContentWidth(CenterHorizontally)
-        .wrapContentHeight(CenterVertically))
+    CircularProgressIndicator(
+        modifier = Modifier
+            .wrapContentWidth(CenterHorizontally)
+            .wrapContentHeight(CenterVertically)
+    )
 }
 
+
+
+@Composable
+fun AlertDialog(deliberation: Deliberation) {
+    MyApplicationComposeTheme {
+        Column {
+            val openDialog = remember { mutableStateOf(false) }
+
+            Button(
+                onClick = { openDialog.value = true },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Bleu1),
+                shape = MaterialTheme.shapes.medium,
+            ) { Text(stringResource(id = R.string.votes_detail)) }
+
+            Spacer(Modifier.size(12.dp))
+
+            if (openDialog.value) {
+                AlertDialog (
+                    onDismissRequest = {
+                        openDialog.value = false
+                    },
+                    title = { Text(text = "Détail des votes") },
+
+                    text = {
+                        Column {
+                            Text("Vote pour : ${deliberation.votePour}")
+                            Text("Vote contre : ${deliberation.voteContre}")
+                            Text("Abstention : ${deliberation.voteAbstention}")
+                            Text("Vote réel : ${deliberation.voteReel}")
+                            Text("Vote effectif : ${deliberation.voteEffectifs}")
+                        }
+                    },
+
+                    confirmButton = {
+                        Button (onClick = { openDialog.value = false }) {
+                            Text(stringResource(id = R.string.close))
+                        }
+                    }
+                )
+            }
+        }
+
+    }
+}
 
 // ##############################################
 // ################ PREVIEW #####################
@@ -157,7 +224,6 @@ fun LiveDataLoadingComponent() {
 fun previewDetail() {
     LiveDataComponentList(getDummyRecord())
 }
-
 
 fun getDummyRecord(): List<Record> {
     return listOf(

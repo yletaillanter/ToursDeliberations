@@ -10,4 +10,8 @@ class MainViewModel(private val deliberationRepo: DeliberationsRepository) : Vie
     fun deliberation(delibId: String): LiveData<List<Record>> {
         return deliberationRepo.getDeliberationById(delibId).asLiveData(viewModelScope.coroutineContext)
     }
+
+    fun deliberationListByDate(delibDate: String): LiveData<List<Record>> {
+        return deliberationRepo.getDeliberationByDate(delibDate).asLiveData(viewModelScope.coroutineContext)
+    }
 }

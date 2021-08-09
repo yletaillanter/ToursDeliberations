@@ -5,11 +5,13 @@ import com.ylt.toursdeliberations.model.Record
 import com.ylt.toursdeliberations.service.DeliberationsService
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
+import java.time.LocalDate
 
 class DeliberationsRepository(private val deliberationsService: DeliberationsService) {
 
-    fun getAllDeliberations(): Flow<List<Record>> = getRemoteDeliberations().map { it.records.toList()}
+    fun getAllDeliberations(): Flow<List<Record>> = getRemoteDeliberations().map { it.records.toList().filter { record -> LocalDate.parse(record.deliberation.delibDate).isAfter(LocalDate.parse("2020-01-01")) }}
     fun getDeliberationById(delibId: String): Flow<List<Record>> = getRemoteDeliberationById(delibId).map { it.records.toList()}
+    fun getDeliberationByDate(delibDate: String) : Flow<List<Record>> = getRemoteDeliberationsByDate(delibDate).map {it.records.toList().filter { record -> LocalDate.parse(record.deliberation.delibDate).isAfter(LocalDate.parse("2021-01-01")) }}
 
     private fun getRemoteDeliberations(): Flow<DeliberationsResponse> = flow {
         Timber.d( "getRemoteDeliberations()")
@@ -30,6 +32,17 @@ class DeliberationsRepository(private val deliberationsService: DeliberationsSer
             emit(networkResult)
         } catch (throwable: Throwable) {
             Timber.e( "error while getting deliberation id [$delibId] : ${throwable}")
+        }
+    }
+
+    private fun getRemoteDeliberationsByDate(delibDate: String): Flow<DeliberationsResponse> = flow {
+        Timber.d("getRemoteDeliberationsByDate($delibDate")
+
+        try {
+            val networkResult = deliberationsService.getDeliberationsByDate(delibDate)
+            emit(networkResult)
+        } catch (throwable: Throwable) {
+            Timber.e( "error while getting deliberation by date [$delibDate] : ${throwable}")
         }
     }
 }

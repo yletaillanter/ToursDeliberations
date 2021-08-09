@@ -8,7 +8,7 @@ class CR(
     @SerializedName("filename") val filename: String,
     @SerializedName("width") val width: String,
     @SerializedName("height") val height: String,
-    @SerializedName("thumbnail") val thumbnail: String){}
+    @SerializedName("thumbnail") val thumbnail: String)
 
 /*
 Data example:

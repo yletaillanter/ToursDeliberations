@@ -2,13 +2,13 @@ package com.ylt.toursdeliberations.model
 
 import com.google.gson.annotations.SerializedName
 
-class Delib (
+class Delib(
     @SerializedName("id") val id: String,
     @SerializedName("format") val format: String,
     @SerializedName("filename") val filename: String,
     @SerializedName("width") val width: String,
     @SerializedName("height") val height: String,
-    @SerializedName("thumbnail") val thumbnail: String){}
+    @SerializedName("thumbnail") val thumbnail: String)
 
 /*
 Data example:

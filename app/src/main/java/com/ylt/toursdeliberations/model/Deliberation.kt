@@ -19,8 +19,7 @@ class Deliberation(@SerializedName("delib_matiere_code") val delibMatiereCode: S
                    @SerializedName("vote_abstention") val voteAbstention: Int,
                    @SerializedName("vote_pour") val votePour: Int,
                    @SerializedName("pref_id") val prefId: String,
-                   @SerializedName("pref_date") val prefDate: String){
-    //constructor(delibObjet: String, collNom: String): this("", "", delibObjet, collNom, "" , CR("","", "", "", "", ""), 0, Delib("","", "", "", "", ""), "", 0, "", "", "", 0, 0, 0,"", "")
+                   @SerializedName("pref_date") val prefDate: String) {
 
     override fun toString(): String {
         return "Deliberations(delibMatiereCode='$delibMatiereCode', delibDate='$delibDate', delibObjet='$delibObjet', collNom='$collNom', delibId='$delibId', voteEffectifs=$voteEffectifs, collSiret='$collSiret', coteContre=$voteContre, delibMatiereNom='$delibMatiereNom', themes='$themes', TypeSeance='$typeSeance', voteReel=$voteReel, voteAbstention=$voteAbstention, votePour=$votePour, prefId='$prefId', prefDate='$prefDate')"

@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tours Deliberations</string>
     <string name="votes_detail">Détail des votes</string>
     <string name="close">Fermer</string>
 </resources>

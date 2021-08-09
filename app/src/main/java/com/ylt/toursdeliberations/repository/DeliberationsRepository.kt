@@ -31,7 +31,7 @@ class DeliberationsRepository(private val deliberationsService: DeliberationsSer
             val networkResult = deliberationsService.getDeliberation(delibId)
             emit(networkResult)
         } catch (throwable: Throwable) {
-            Timber.e( "error while getting deliberation id [$delibId] : ${throwable}")
+            Timber.e( "error while getting deliberation by id [$delibId] : ${throwable}")
         }
     }
 

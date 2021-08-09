@@ -6,12 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
@@ -28,14 +25,9 @@ import android.net.Uri
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toLowerCase
-import androidx.compose.ui.unit.sp
 import com.ylt.toursdeliberations.R
-import com.ylt.toursdeliberations.ui.main.theme.Beige0
 import com.ylt.toursdeliberations.ui.main.theme.Bleu1
 import com.ylt.toursdeliberations.ui.main.theme.MyApplicationComposeTheme
 import com.ylt.toursdeliberations.ui.main.theme.ToursDelibTypography
@@ -47,7 +39,7 @@ fun DeliberationDetail(recordLiveData: LiveData<List<Record>>) {
     val record by recordLiveData.observeAsState(initial = emptyList())
 
     if (record.isEmpty()) {
-        LiveDataLoadingComponent()
+        LiveDataLoadingComponentProgressionIndicator()
     } else {
         LiveDataComponentList(record)
     }
@@ -60,54 +52,48 @@ fun LiveDataComponentList(record: List<Record>) {
     val date = LocalDate.parse(deliberation.delibDate)
     val context = LocalContext.current
 
-    MyApplicationComposeTheme {
-        Scaffold (
-            topBar = { MyTopBar() }
-        ) {
+    Column {
+        Text(deliberation.delibObjet.lowercase().replaceFirstChar { char -> char.uppercase() }, style = ToursDelibTypography.subtitle2, modifier = Modifier.padding(8.dp))
+        Text("${deliberation.collNom} le ${date.dayOfMonth} ${getFrenchMonth(date.month)} ${date.year} ", Modifier.padding(8.dp))
+        Text(deliberation.typeSeance, Modifier.padding(8.dp))
+        Card {
             Column {
-                Text("${deliberation.collNom} le ${date.dayOfMonth} ${getFrenchMonth(date.month)} ${date.year} ", Modifier.padding(8.dp))
-                Text(deliberation.typeSeance, Modifier.padding(8.dp))
-                Text(deliberation.delibObjet.lowercase().replaceFirstChar { char -> char.uppercase() }, Modifier.padding(8.dp))
-                Card {
-                    Column {
-                        Spacer(Modifier.size(12.dp))
-                        Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                            ImageResourceThumb(R.drawable.thumb_up, "vote pour ", deliberation.votePour)
-                            Spacer(modifier = Modifier.padding(10.dp))
-                            ImageResourceThumb(R.drawable.thumb_down_24, "vote contre ", deliberation.voteContre)
-                        }
-
-                        Row (
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            AlertDialog(deliberation)
-                        }
-                    }
-
+                Spacer(Modifier.size(12.dp))
+                Row (Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    ImageResourceThumb(R.drawable.thumb_up, "vote pour ", deliberation.votePour)
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    ImageResourceThumb(R.drawable.thumb_down_24, "vote contre ", deliberation.voteContre)
                 }
-                Spacer(Modifier.size(15.dp))
-                Card (shape = RoundedCornerShape(3.dp)) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        ImageResourcePDF("Compte-rendu") {
-                            intentPdf(
-                                deliberation.crUrl.id,
-                                context
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(40.dp))
-                        ImageResourcePDF("Délibération") {
-                            intentPdf(
-                                deliberation.delibUrl.id,
-                                context
-                            )
-                        }
-                    }
+
+                Row (
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    AlertDialog(deliberation)
+                }
+            }
+
+        }
+        Spacer(Modifier.size(15.dp))
+        Card (shape = RoundedCornerShape(3.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ImageResourcePDF("Compte-rendu") {
+                    intentPdf(
+                        deliberation.crUrl.id,
+                        context
+                    )
+                }
+                Spacer(modifier = Modifier.padding(30.dp))
+                ImageResourcePDF("Délibération") {
+                    intentPdf(
+                        deliberation.delibUrl.id,
+                        context
+                    )
                 }
             }
         }
@@ -159,17 +145,6 @@ fun ImageResourcePDF(text: String, onClick: ()->Unit) {
         Text(text)
     }
 }
-
-@Composable
-fun LiveDataLoadingComponent() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .wrapContentWidth(CenterHorizontally)
-            .wrapContentHeight(CenterVertically)
-    )
-}
-
-
 
 @Composable
 fun AlertDialog(deliberation: Deliberation) {

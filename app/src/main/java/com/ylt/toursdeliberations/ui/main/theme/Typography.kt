@@ -32,12 +32,12 @@ val ToursDelibTypography = Typography(
     subtitle1 = TextStyle(
         fontFamily = LouisGeorgeCafe,
         fontWeight = FontWeight.W400,
-        fontSize = 16.sp
+        fontSize = 20.sp
     ),
     subtitle2 = TextStyle(
         fontFamily = LouisGeorgeCafe,
         fontWeight = FontWeight.W300,
-        fontSize = 14.sp
+        fontSize = 18.sp
     ),
     body1 = TextStyle(
         fontFamily = LouisGeorgeCafe,

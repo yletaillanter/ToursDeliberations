@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 import com.ylt.toursdeliberations.R
 
 private val LouisGeorgeCafe = FontFamily (
-    Font(R.font.louis_george_cafe)
+    Font(R.font.roboto_regular)
 )
 
 val ToursDelibTypography = Typography(

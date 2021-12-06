@@ -100,7 +100,7 @@ fun DataLoadingProgressionIndicator() {
 fun MyTopBar() {
     TopAppBar(
         title = {
-            Text(style = ToursDelibTypography.h4, text = "Tours Délibération")
+            Text(style = ToursDelibTypography.h4, text = "Tours Délibérations")
         },
         backgroundColor = Neutral0
     )

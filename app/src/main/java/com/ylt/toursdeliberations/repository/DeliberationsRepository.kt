@@ -10,8 +10,7 @@ import java.time.LocalDate
 class DeliberationsRepository(private val deliberationsService: DeliberationsService) {
 
     fun getAllDeliberations(): Flow<List<Record>> = getRemoteDeliberations().map { it.records.toList().filter { record -> LocalDate.parse(record.deliberation.delibDate).isAfter(LocalDate.parse("2020-01-01")) }}
-    fun getDeliberationById(delibId: String): Flow<List<Record>> = getRemoteDeliberationById(delibId).map { it.records.toList()}
-    fun getDeliberationByDate(delibDate: String) : Flow<List<Record>> = getRemoteDeliberationsByDate(delibDate).map {it.records.toList().filter { record -> LocalDate.parse(record.deliberation.delibDate).isAfter(LocalDate.parse("2021-01-01")) }}
+    fun getDeliberationById(delibId: String): Flow<List<Record>> = getRemoteDeliberationById(delibId).map { it.records.toList() }
 
     private fun getRemoteDeliberations(): Flow<DeliberationsResponse> = flow {
         Timber.d( "getRemoteDeliberations()")

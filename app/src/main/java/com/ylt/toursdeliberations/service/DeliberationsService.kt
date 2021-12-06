@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface DeliberationsService {
 
-    @GET("api/records/1.0/search/?dataset=deliberations-tours-metropole-val-de-loire&q=&sort=delib_date&rows=40&facet=delib_id&facet=delib_date&facet=delib_objet&facet=type_seance&facet=themes")
+    @GET("api/records/1.0/search/?dataset=deliberations-tours-metropole-val-de-loire&q=&sort=delib_date&rows=1500&facet=delib_id&facet=delib_date&facet=delib_objet&facet=type_seance&facet=themes")
     suspend fun getDeliberations(): DeliberationsResponse
 
     @GET("api/records/1.0/search/?dataset=deliberations-tours-metropole-val-de-loire&q=&sort=delib_date&facet=delib_id&facet=delib_date&facet=delib_objet&facet=type_seance&facet=themes")

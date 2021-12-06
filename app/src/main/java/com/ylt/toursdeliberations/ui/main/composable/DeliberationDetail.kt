@@ -5,13 +5,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
 import com.ylt.toursdeliberations.model.CR
 import com.ylt.toursdeliberations.model.Delib
 import com.ylt.toursdeliberations.model.Deliberation
@@ -25,10 +23,12 @@ import android.net.Uri
 import androidx.compose.animation.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.LiveData
 import com.ylt.toursdeliberations.R
 import com.ylt.toursdeliberations.ui.main.theme.*
 
@@ -39,15 +39,15 @@ fun DeliberationDetail(recordLiveData: LiveData<List<Record>>) {
     val record by recordLiveData.observeAsState(initial = emptyList())
 
     if (record.isEmpty()) {
-        LiveDataLoadingComponentProgressionIndicator()
+        DataLoadingProgressionIndicator()
     } else {
-        LiveDataComponentList(record)
+        ListOfRecord(record)
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun LiveDataComponentList(record: List<Record>) {
+fun ListOfRecord(record: List<Record>) {
 
     var visibleLogo by remember { mutableStateOf(false)}
     visibleLogo = true
@@ -162,7 +162,9 @@ fun LiveDataComponentList(record: List<Record>) {
                     Image(
                         painter = image,
                         contentDescription = "logo de la ville de Tours",
-                        modifier = Modifier.padding(8.dp).size(60.dp)
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(60.dp)
                     )
                 }
             }
@@ -177,20 +179,20 @@ fun intentPdf(id: String, context: Context): Unit {
 }
 
 fun getFrenchMonth(month: Month?): String {
-    when(month?.name) {
-        "JANUARY" -> return "Janvier"
-        "FEBRUARY" -> return "Février"
-        "MARCH" -> return "Mars"
-        "APRIL" -> return "Avril"
-        "MAY" -> return "Mai"
-        "JUNE" -> return "Juin"
-        "JULY" -> return "Juillet"
-        "AUGUST" -> return "Aout"
-        "SEPTEMBER" -> return "Septembre"
-        "OCTOBRE" -> return "Octobre"
-        "NOVEMBER" -> return "Novembre"
-        "DECEMBER" -> return "Décembre"
-        else -> return ""
+    return when(month?.name) {
+        "JANUARY" -> "Janvier"
+        "FEBRUARY" -> "Février"
+        "MARCH" -> "Mars"
+        "APRIL" -> "Avril"
+        "MAY" -> "Mai"
+        "JUNE" -> "Juin"
+        "JULY" -> "Juillet"
+        "AUGUST" -> "Aout"
+        "SEPTEMBER" -> "Septembre"
+        "OCTOBRE" -> "Octobre"
+        "NOVEMBER" -> "Novembre"
+        "DECEMBER" -> "Décembre"
+        else -> ""
     }
 }
 
@@ -216,41 +218,6 @@ fun ImageResourcePDF(text: String, onClick: ()->Unit) {
     }
 }
 
-/*
-@Composable
-fun AlertDialogView(deliberation: Deliberation) {
-    Column {
-        val openDialog = remember { mutableStateOf(false) }
-
-        Spacer(Modifier.size(12.dp))
-
-        if (openDialog.value) {
-            AlertDialog (
-                onDismissRequest = { openDialog.value = false },
-                title = { Text(text = "Détail des votes") },
-                text = {
-                    Column {
-                        Text("Vote pour : ${deliberation.votePour}")
-                        Text("Vote contre : ${deliberation.voteContre}")
-                        Text("Abstention : ${deliberation.voteAbstention}")
-                        Text("Vote réel : ${deliberation.voteReel}")
-                        Text("Vote effectif : ${deliberation.voteEffectifs}")
-                    }
-                },
-
-                confirmButton = {
-                    Button (
-                        colors = ButtonDefaults.textButtonColors(backgroundColor = Beige0),
-                        onClick = { openDialog.value = false }) {
-                        Text(stringResource(id = R.string.close))
-                    }
-                }
-            )
-        }
-    }
-}
- */
-
 // ##############################################
 // ################ PREVIEW #####################
 // ##############################################
@@ -259,7 +226,7 @@ fun AlertDialogView(deliberation: Deliberation) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewDetail() {
-    LiveDataComponentList(getDummyRecord())
+    ListOfRecord(getDummyRecord())
 }
 
 fun getDummyRecord(): List<Record> {

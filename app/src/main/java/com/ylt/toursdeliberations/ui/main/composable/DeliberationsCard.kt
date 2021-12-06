@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.ylt.toursdeliberations.R
 import com.ylt.toursdeliberations.model.Deliberation
 import com.ylt.toursdeliberations.model.Record
@@ -28,7 +30,8 @@ import com.ylt.toursdeliberations.ui.main.theme.ToursDelibTypography
 @Composable
 fun DeliberationsListView(records: List<Record>, onClickDeliberation: (String) -> Unit) {
 
-    LazyColumn {
+    val listState = rememberLazyListState()
+    LazyColumn (state = listState) {
         items(records) { record ->
             val bundle = Bundle()
             bundle.putString("delibId", record.deliberation.delibId)
@@ -40,11 +43,12 @@ fun DeliberationsListView(records: List<Record>, onClickDeliberation: (String) -
     }
 }
 
-
 @Composable
 fun DeliberationsCardView(delib: Deliberation, onDeliberationClicked: (String) -> Unit) {
 
-    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)) {
         Column(
             Modifier
                 .padding(8.dp)
@@ -90,5 +94,5 @@ fun DeliberationsCardViewPreview() {
 @Preview(showSystemUi = true)
 @Composable
 fun DeliberationsListViewPreview() {
-    DeliberationsListView(getDummyRecord(), {})
+    DeliberationsListView(getDummyRecord()) {}
 }

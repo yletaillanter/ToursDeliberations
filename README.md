@@ -4,7 +4,7 @@ Tours Délibérations vous permet de consulter les délibérations du Conseil et
 
 ## Screen
 
-![Image 1](image1.png)
+![Image 1](image1.png | width=100)
 ![Image 2](image2.png)
 ![Image 3](image3.png)
 

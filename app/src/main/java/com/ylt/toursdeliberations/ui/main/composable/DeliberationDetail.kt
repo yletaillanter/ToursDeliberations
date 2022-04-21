@@ -23,20 +23,20 @@ import android.net.Uri
 import androidx.compose.animation.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.LiveData
 import com.ylt.toursdeliberations.R
 import com.ylt.toursdeliberations.ui.main.theme.*
+import kotlinx.coroutines.flow.Flow
 
 @ExperimentalAnimationApi
 @Composable
-fun DeliberationDetail(recordLiveData: LiveData<List<Record>>) {
+fun DeliberationDetail(record: Flow<List<Record>>) {
 
-    val record by recordLiveData.observeAsState(initial = emptyList())
+    val record by record.collectAsState(initial = emptyList())
 
     if (record.isEmpty()) {
         DataLoadingProgressionIndicator()

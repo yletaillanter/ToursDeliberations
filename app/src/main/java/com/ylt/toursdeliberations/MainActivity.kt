@@ -17,8 +17,7 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //installSplashScreen()
-        viewModel = ViewModelProvider(this, provideMainViewModelFactory(applicationContext)).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this, provideMainViewModelFactory(applicationContext))[MainViewModel::class.java]
 
         setContent {
             DeliberationApp(viewModel)

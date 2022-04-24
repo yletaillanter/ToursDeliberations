@@ -12,13 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavType
-import androidx.navigation.compose.navArgument
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+
 import com.ylt.toursdeliberations.ui.main.MainViewModel
 import com.ylt.toursdeliberations.ui.main.theme.*
 
 import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.ylt.toursdeliberations.R
 import timber.log.Timber
 
@@ -45,12 +46,8 @@ fun DeliberationApp(viewModel: MainViewModel) {
             ) {
                 composable(
                     route = "list",
-                    popExitTransition = { _, _ ->
-                        fadeOut(animationSpec = tween(100))
-                    },
-                    popEnterTransition = { _, _ ->
-                        fadeIn(animationSpec = tween(100))
-                    }
+                    popExitTransition = { fadeOut(animationSpec = tween(100)) },
+                    popEnterTransition = { fadeIn(animationSpec = tween(100)) }
                 ) {
                     if (records.isEmpty()) {
                         DataLoadingProgressionIndicator()
@@ -64,7 +61,7 @@ fun DeliberationApp(viewModel: MainViewModel) {
                 composable(
                     route = "detail/{id}",
                     arguments = listOf(navArgument("id") { type = NavType.StringType }),
-                    enterTransition = { _, _ ->
+                    enterTransition = {
                         slideInHorizontally (
                             initialOffsetX = { 500 },
                             animationSpec = tween(
@@ -73,7 +70,7 @@ fun DeliberationApp(viewModel: MainViewModel) {
                             )
                         )
                     },
-                    exitTransition = { _, _ ->
+                    exitTransition = {
                         slideOutHorizontally (
                             targetOffsetX = { 500 },
                             animationSpec = tween(
